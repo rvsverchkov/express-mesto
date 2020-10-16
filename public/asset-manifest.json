@@ -1,0 +1,23 @@
+{
+  "files": {
+    "main.css": "/static/css/main.51672d33.chunk.css",
+    "main.js": "/static/js/main.4f23c9ae.chunk.js",
+    "main.js.map": "/static/js/main.4f23c9ae.chunk.js.map",
+    "runtime-main.js": "/static/js/runtime-main.e8402bce.js",
+    "runtime-main.js.map": "/static/js/runtime-main.e8402bce.js.map",
+    "static/js/2.bfa99d5d.chunk.js": "/static/js/2.bfa99d5d.chunk.js",
+    "static/js/2.bfa99d5d.chunk.js.map": "/static/js/2.bfa99d5d.chunk.js.map",
+    "index.html": "/index.html",
+    "precache-manifest.4558f9dd2a9712c63f6713ec647a3443.js": "/precache-manifest.4558f9dd2a9712c63f6713ec647a3443.js",
+    "service-worker.js": "/service-worker.js",
+    "static/css/main.51672d33.chunk.css.map": "/static/css/main.51672d33.chunk.css.map",
+    "static/js/2.bfa99d5d.chunk.js.LICENSE.txt": "/static/js/2.bfa99d5d.chunk.js.LICENSE.txt",
+    "static/media/index.css": "/static/media/trash-card.efa6fb04.svg"
+  },
+  "entrypoints": [
+    "static/js/runtime-main.e8402bce.js",
+    "static/js/2.bfa99d5d.chunk.js",
+    "static/css/main.51672d33.chunk.css",
+    "static/js/main.4f23c9ae.chunk.js"
+  ]
+}
