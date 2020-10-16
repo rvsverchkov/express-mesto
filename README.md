@@ -1,4 +1,18 @@
-# Проект Mesto фронтенд + бэкенд
+# Проект 12 Mesto фронтенд + бэкенд
+
+****
+# Используемые технологии
+* HTML
+* БЭМ и БЭМ Nested
+* Grid Layout
+* Flexbox
+* CSS
+* JavaScript
+* OOP
+* Webpack
+* Node.js
+* Express.js
+****
 
 ## Директории
 
