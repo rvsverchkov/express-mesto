@@ -1,11 +1,10 @@
 const router = require('express').Router();
 const path = require('path');
 const readFile = require('../utils/read');
-
-const jsonDataPath = path.join(__dirname, '..', 'data', 'users.json');
+const User = require('../models/user');
 
 router.get('/users', (req, res) => {
-  readFile(jsonDataPath)
+  User.find({})
     .then((data) => {
       res.send(data);
     })
@@ -13,6 +12,16 @@ router.get('/users', (req, res) => {
       res.status(500).send({ error: `Ошибка на сервере: ${err.message}` });
     });
 });
+
+router.post('/users', (req, res) => {
+  const { name, about, avatar } = req.body;
+  User.create({ name, about, avatar })
+    .then((user) => res.send({ data: user }))
+    .catch(err => {
+      console.log(err);
+      res.status(500).send({ message: 'Ошибка сервера' });
+    })
+})
 
 router.get('/users/:id', (req, res) => {
   const { id } = req.params;
