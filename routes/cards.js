@@ -1,11 +1,8 @@
 const router = require('express').Router();
-const path = require('path');
-const readFile = require('../utils/read');
+const Card = require('../models/card');
 
-const jsonDataPath = path.join(__dirname, '..', 'data', 'cards.json');
-
-router.get('/cards', (req, res) => {
-  readFile(jsonDataPath)
+router.get('/users', (req, res) => {
+  Card.find({})
     .then((data) => {
       res.send(data);
     })
@@ -13,5 +10,7 @@ router.get('/cards', (req, res) => {
       res.status(500).send({ error: `Ошибка на сервере: ${err.message}` });
     });
 });
+
+
 
 module.exports = router;
