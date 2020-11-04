@@ -31,4 +31,24 @@ const createProfile = async (req, res) => {
   }
 }
 
-module.exports = { getUsers, getProfile, createProfile };
+const updateProfile = async (req, res) => {
+  try {
+    const { name, about } = req.body;
+    const user = await User.findOneAndUpdate(req.user._id, { name, about }, { new: true, runValidators: true });
+    return res.status(200).send(user);
+  } catch (error) {
+    res.status(400).send({ message: 'Ошибка на сервере, повторите попытку' });
+  }
+}
+
+const updateAvatar = async (req, res) => {
+  try {
+    const { avatar } = req.body;
+    const user = await User.findOneAndUpdate(req.user._id, { avatar }, { new: true, runValidators: true });
+    return res.status(200).send(user);
+  } catch (error) {
+    res.status(400).send({ message: 'Ошибка на сервере, повторите попытку' });
+  }
+}
+
+module.exports = { getUsers, getProfile, createProfile, updateProfile, updateAvatar };

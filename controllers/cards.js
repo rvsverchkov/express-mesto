@@ -29,4 +29,22 @@ const deleteCard = async (req, res) => {
   }
 }
 
-module.exports = { getCards, createCard, deleteCard };
+const likeCard = async (req, res) => {
+  try {
+    const card = await Card.findByIdAndUpdate(req.params.id, { $addToSet: { likes: req.user._id } }, { new: true });
+    return res.status(200).send({ data: card });
+  } catch (error) {
+    res.status(400).send({ message: 'Ошибка на сервере, повторите попытку' });
+  }
+}
+
+const dislikeCard = async (req, res) => {
+  try {
+    const card = await Card.findByIdAndUpdate(req.params.id, { $pull: { likes: req.user._id } }, { new: true });
+    return res.status(200).send({ data: card });
+  } catch (error) {
+    res.status(400).send({ message: 'Ошибка на сервере, повторите попытку' });
+  }
+}
+
+module.exports = { getCards, createCard, deleteCard, likeCard, dislikeCard };
