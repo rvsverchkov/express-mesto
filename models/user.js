@@ -1,3 +1,4 @@
+/* eslint-disable no-useless-escape */
 const mongoose = require('mongoose');
 
 const userSchema = new mongoose.Schema({
@@ -5,23 +6,23 @@ const userSchema = new mongoose.Schema({
     type: String,
     minlength: 2,
     maxlength: 30,
-    required: true
+    required: true,
   },
   about: {
     type: String,
     minlength: 2,
     maxlength: 30,
-    required: true
+    required: true,
   },
   avatar: {
     type: String,
     validate: {
       validator(v) {
         return /^(http?:\/\/(www\.)?)([\da-z\.-]+)\.([\/\w\.-]*)*\/?#?$/.test(v);
-      }
+      },
     },
-    required: true
-  }
+    required: true,
+  },
 });
 
 module.exports = mongoose.model('user', userSchema);

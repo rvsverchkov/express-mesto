@@ -1,3 +1,4 @@
+/* eslint-disable no-useless-escape */
 const mongoose = require('mongoose');
 
 const cardSchema = new mongoose.Schema({
@@ -5,30 +6,30 @@ const cardSchema = new mongoose.Schema({
     type: String,
     minlength: 2,
     maxlength: 30,
-    required: true
+    required: true,
   },
   link: {
     type: String,
     validate: {
       validator(v) {
         return /^(http?:\/\/(www\.)?)([\da-z\.-]+)\.([\/\w\.-]*)*\/#?$/.test(v);
-      }
+      },
     },
-    required: true
+    required: true,
   },
   owner: {
     type: mongoose.Types.ObjectId,
     ref: 'user',
-    required: true
+    required: true,
   },
   likes: {
     type: mongoose.Types.ObjectId,
-    ref: 'user'
+    ref: 'user',
   },
   createdAt: {
     type: Date,
-    default: Date.now()
-  }
+    default: Date.now(),
+  },
 });
 
 module.exports = mongoose.model('card', cardSchema);
