@@ -1,3 +1,4 @@
+/* eslint-disable linebreak-style */
 /* eslint-disable no-useless-escape */
 const mongoose = require('mongoose');
 
@@ -12,7 +13,7 @@ const cardSchema = new mongoose.Schema({
     type: String,
     validate: {
       validator(v) {
-        return /^(http?:\/\/(www\.)?)([\da-z\.-]+)\.([\/\w\.-]*)*\/#?$/.test(v);
+        return /^(http?:\/\/(www\.)?)([\da-z\.-]+)\.([\/\w\.-]*)*\/?#?$/.test(v);
       },
     },
     required: true,
