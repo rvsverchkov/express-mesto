@@ -21,10 +21,12 @@
   },
   "homepage": "https://github.com/rvsverchkov/express-mesto#readme",
   "dependencies": {
+    "bcryptjs": "^2.4.3",
     "body-parser": "^1.19.0",
     "eslint-plugin-import": "^2.22.1",
     "express": "^4.17.1",
-    "mongoose": "^5.10.11"
+    "mongoose": "^5.10.11",
+    "validator": "^13.1.17"
   },
   "devDependencies": {
     "eslint": "^7.11.0",
