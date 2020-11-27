@@ -1,3 +1,4 @@
+/* eslint-disable linebreak-style */
 /* eslint-disable no-underscore-dangle */
 /* eslint-disable linebreak-style */
 /* eslint-disable consistent-return */
@@ -12,15 +13,16 @@ const getCards = async (req, res) => {
   }
 };
 
-const createCard = async (req, res) => {
-  try {
-    const { name, link } = req.body;
-    const owner = req.user._id;
-    const card = await Card.create({ name, link, owner });
-    return res.status(200).send(card);
-  } catch (error) {
-    res.status(400).send({ message: 'Ошибка на сервере, повторите попытку' });
-  }
+const createCard = (req, res) => {
+  const { name, link } = req.body;
+  const { _id } = req.user;
+  Card.create({ name, link, owner: _id })
+    .then((card) => {
+      res.status(200).send(card);
+    })
+    .catch((error) => {
+      res.status(400).send({ message: 'Ошибка на сервере, повторите попытку', error });
+    });
 };
 
 const deleteCard = async (req, res) => {
