@@ -1,3 +1,4 @@
+/* eslint-disable func-names */
 /* eslint-disable linebreak-style */
 /* eslint-disable no-useless-escape */
 const mongoose = require('mongoose');
@@ -42,6 +43,7 @@ const userSchema = new mongoose.Schema({
   password: {
     type: String,
     required: true,
+    select: false,
   },
 });
 

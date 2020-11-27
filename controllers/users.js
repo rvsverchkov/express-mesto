@@ -3,8 +3,9 @@
 const bcrypt = require('bcryptjs');
 const jwt = require('jsonwebtoken');
 const User = require('../models/user');
+require('dotenv').config();
 
-const { NODE_ENV, JWT_SECRET} = process.env;
+const { NODE_ENV, JWT_SECRET } = process.env;
 
 const getUsers = (req, res) => {
   User.find({})
@@ -16,8 +17,8 @@ const getUsers = (req, res) => {
     });
 };
 
-const getProfile = async (req, res) => {
-  User.findById(req.params.id)
+const getUserInfo = (req, res) => {
+  User.findById(req.user._id)
     .then((user) => {
       res.status(200).send(user);
     })
@@ -30,11 +31,15 @@ const getProfile = async (req, res) => {
 
 const login = (req, res) => {
   const { email, password } = req.body;
+  if (!email || !password) {
+    return res.status(400).send({ message: 'Невалидные данные' });
+  }
   return User.findUserByCredentials(email, password)
     .then((user) => {
       const token = jwt.sign(
         { _id: user._id },
         NODE_ENV === 'production' ? JWT_SECRET : 'dev-secret',
+        { expiresIn: '7d' },
       );
       res.send({ token });
     })
@@ -49,6 +54,9 @@ const createUser = (req, res) => {
   const {
     name, about, avatar, email, password,
   } = req.body;
+  if (!email || !password) {
+    return res.status(400).send({ message: 'Невалидные данные' });
+  }
   bcrypt.hash(password, 10)
     .then((hash) => User.create({
       name,
@@ -88,5 +96,5 @@ const updateAvatar = async (req, res) => {
 };
 
 module.exports = {
-  getUsers, getProfile, createUser, updateProfile, updateAvatar, login,
+  getUsers, getUserInfo, createUser, updateProfile, updateAvatar, login,
 };

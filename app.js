@@ -2,7 +2,6 @@
 const express = require('express');
 const mongoose = require('mongoose');
 const bodyParser = require('body-parser');
-require('dotenv').config();
 
 const app = express();
 const PORT = 3000;
@@ -15,13 +14,6 @@ mongoose.connect('mongodb://localhost:27017/mestodb', {
   useCreateIndex: true,
   useFindAndModify: false,
   useUnifiedTopology: true,
-});
-
-app.use((req, res, next) => {
-  req.user = {
-    _id: '5fa27024b4a90146449ff114',
-  };
-  next();
 });
 
 app.use(bodyParser.json());
