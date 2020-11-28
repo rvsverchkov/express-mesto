@@ -1,0 +1,9 @@
+/* eslint-disable linebreak-style */
+class AuthentificationError extends Error {
+  constructor(message) {
+    super(message);
+    this.statusCode = 401;
+  }
+}
+
+module.exports = AuthentificationError;

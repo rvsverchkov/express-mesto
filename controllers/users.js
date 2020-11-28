@@ -3,36 +3,32 @@
 const bcrypt = require('bcryptjs');
 const jwt = require('jsonwebtoken');
 const User = require('../models/user');
+const RequestError = require('../errors/request-error.js');
+const AuthentificationError = require('../errors/authentification-error.js');
 require('dotenv').config();
 
 const { NODE_ENV, JWT_SECRET } = process.env;
 
-const getUsers = (req, res) => {
+const getUsers = (req, res, next) => {
   User.find({})
     .then((user) => {
       res.status(200).send(user);
     })
-    .catch((error) => {
-      res.status(200).send(error);
-    });
+    .catch(next);
 };
 
-const getUserInfo = (req, res) => {
+const getUserInfo = (req, res, next) => {
   User.findById(req.user._id)
     .then((user) => {
       res.status(200).send(user);
     })
-    .catch((error) => {
-      res.status(400).send({
-        message: 'Ошибка на сервере, повторите попытку', error: `${error}`,
-      });
-    });
+    .catch(next);
 };
 
-const login = (req, res) => {
+const login = (req, res, next) => {
   const { email, password } = req.body;
   if (!email || !password) {
-    return res.status(400).send({ message: 'Невалидные данные' });
+    throw new RequestError('Были введены невалидные данные');
   }
   return User.findUserByCredentials(email, password)
     .then((user) => {
@@ -43,19 +39,15 @@ const login = (req, res) => {
       );
       res.send({ token });
     })
-    .catch((error) => {
-      res
-        .status(401)
-        .send({ message: error.message });
-    });
+    .catch(() => next(new AuthentificationError('Неправильная почта или пароль')));
 };
 
-const createUser = (req, res) => {
+const createUser = (req, res, next) => {
   const {
     name, about, avatar, email, password,
   } = req.body;
   if (!email || !password) {
-    return res.status(400).send({ message: 'Невалидные данные' });
+    throw new RequestError('Были введены невалидные данные');
   }
   bcrypt.hash(password, 10)
     .then((hash) => User.create({
@@ -66,33 +58,34 @@ const createUser = (req, res) => {
       password: hash,
     }))
     .then((user) => res.send(user))
-    .catch((err) => res.status(400).send(err));
+    .catch(next);
 };
 
-const updateProfile = async (req, res) => {
+const updateProfile = (req, res, next) => {
   const {
     name, about,
   } = req.body;
+  if (!name || !about) {
+    throw new RequestError('Были введены невалидные данные');
+  }
   User.findByIdAndUpdate(req.user._id, { name, about }, { new: true, runValidators: true })
     .then((user) => {
       res.status(200).send(user);
     })
-    .catch((error) => {
-      res.status(400).send({
-        message: 'Ошибка на сервере, повторите попытку', error: `${error}`,
-      });
-    });
+    .catch(next);
 };
 
-const updateAvatar = async (req, res) => {
-  try {
-    const { avatar } = req.body;
-    const user = await User.findOneAndUpdate(req.user._id,
-      { avatar }, { new: true, runValidators: true });
-    return res.status(200).send(user);
-  } catch (error) {
-    res.status(400).send({ message: 'Ошибка на сервере, повторите попытку' });
+const updateAvatar = (req, res, next) => {
+  const { avatar } = req.body;
+  const { _id } = req.user;
+  if (!avatar) {
+    throw new RequestError('Были введены невалидные данные');
   }
+  User.findOneAndUpdate({ _id }, { avatar }, { new: true, runValidators: true })
+    .then((user) => {
+      res.status(200).send(user);
+    })
+    .catch(next);
 };
 
 module.exports = {

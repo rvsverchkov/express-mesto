@@ -3,67 +3,67 @@
 /* eslint-disable linebreak-style */
 /* eslint-disable consistent-return */
 const Card = require('../models/card');
+const RequestError = require('../errors/request-error.js');
+const NotFoundError = require('../errors/not-found-error.js');
+const PermissionError = require('../errors/permission-error.js');
 
-const getCards = async (req, res) => {
-  try {
-    const cards = await Card.find({});
-    return res.status(200).send(cards);
-  } catch (error) {
-    res.status(400).send(error);
-  }
-};
-
-const createCard = (req, res) => {
-  const { name, link } = req.body;
-  const { _id } = req.user;
-  Card.create({ name, link, owner: _id })
+const getCards = (req, res, next) => {
+  Card.find({})
     .then((card) => {
       res.status(200).send(card);
     })
-    .catch((error) => {
-      res.status(400).send({ message: 'Ошибка на сервере, повторите попытку', error });
-    });
+    .catch(next);
 };
 
-const deleteCard = async (req, res) => {
-  try {
-    const card = await Card.findByIdAndRemove(req.params.id);
-    if (card === null) {
-      res.status(404).send({ message: 'Данная карточка отсутствует на сервере и не может быть удалена' });
-    } else {
-      res.status(200).send({ data: card, message: 'Ваша карточка была успешно удалена с сервера' });
-    }
-  } catch (error) {
-    res.status(400).send({ message: 'Ошибка на сервере, повторите попытку' });
+const createCard = (req, res, next) => {
+  const { name, link } = req.body;
+  if (!name || !link) {
+    throw new RequestError('Были введены невалидные данные');
   }
+  Card.create({ name, link, owner: req.user._id })
+    .then((card) => {
+      res.status(200).send(card);
+    })
+    .catch(next);
 };
 
-const likeCard = async (req, res) => {
-  try {
-    const card = await Card.findByIdAndUpdate(req.params.id,
-      { $addToSet: { likes: req.user._id } }, { new: true });
-    if (card === null) {
-      res.status(404).send({ message: 'Лайк не может быть поставлен, поскольку выбранная карточка отсутствует на сервере' });
-    } else {
-      return res.status(200).send({ data: card, message: 'Лайк был успешно поставлен на выбранную карточку' });
-    }
-  } catch (error) {
-    res.status(400).send({ message: 'Ошибка на сервере, повторите попытку' });
-  }
+const deleteCard = (req, res, next) => {
+  Card.findById(req.params.id)
+    .then((card) => {
+      if (card.owner.toString() === req.user._id) {
+        card.remove()
+          .then((currentCard) => {
+            res.status(200).send(currentCard);
+          });
+      } else {
+        throw new PermissionError('Данная карточка не является вашей');
+      }
+    })
+    .catch(next);
 };
 
-const dislikeCard = async (req, res) => {
-  try {
-    const card = await Card.findByIdAndUpdate(req.params.id,
-      { $pull: { likes: req.user._id } }, { new: true });
-    if (card === null) {
-      res.status(404).send({ message: 'Лайк не может быть удален, поскольку выбранная карточка отсутствует на сервере' });
-    } else {
-      res.status(200).send({ data: card, message: 'Лайк был успешно удален с выбранной карточки' });
-    }
-  } catch (error) {
-    res.status(400).send({ message: 'Ошибка на сервере, повторите попытку' });
-  }
+const likeCard = async (req, res, next) => {
+  Card.findByIdAndUpdate(req.params.id, { $addToSet: { likes: req.user._id } }, { new: true })
+    .then((card) => {
+      if (card === null) {
+        throw new NotFoundError('Лайк не может быть поставлен, поскольку выбранная карточка отсутствует на сервере');
+      } else {
+        res.status(200).send({ data: card, message: 'Лайк был успешно поставлен на выбранную карточку' });
+      }
+    })
+    .catch(next);
+};
+
+const dislikeCard = (req, res, next) => {
+  Card.findByIdAndUpdate(req.params.id, { $pull: { likes: req.user._id } }, { new: true })
+    .then((card) => {
+      if (card === null) {
+        throw new NotFoundError('Лайк не может быть удален, поскольку выбранная карточка отсутствует на сервере');
+      } else {
+        res.status(200).send({ data: card, message: 'Лайк был успешно удален с выбранной карточки' });
+      }
+    })
+    .catch(next);
 };
 
 module.exports = {
