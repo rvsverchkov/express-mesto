@@ -9,6 +9,7 @@ const PORT = 3000;
 const path = require('path');
 const usersRoutes = require('./routes/users.js');
 const cardsRoutes = require('./routes/cards.js');
+const { requestLogger, errorLogger } = require('./middlewares/logger.js');
 
 mongoose.connect('mongodb://localhost:27017/mestodb', {
   useNewUrlParser: true,
@@ -20,11 +21,13 @@ mongoose.connect('mongodb://localhost:27017/mestodb', {
 app.use(bodyParser.json());
 app.use(bodyParser.urlencoded({ extended: true }));
 app.use(express.static(path.join(__dirname, 'public')));
+app.use(requestLogger);
 app.use('/', usersRoutes);
 app.use('/', cardsRoutes);
 app.use('*', (req, res) => {
   res.status(404).send({ message: 'Запрашиваемый ресурс не найден' });
 });
+app.use(errorLogger);
 app.use((err, req, res, next) => {
   const { statusCode = 500, message } = err;
   res
