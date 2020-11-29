@@ -19,7 +19,9 @@ mongoose.connect('mongodb://localhost:27017/mestodb', {
   useUnifiedTopology: true,
 });
 
-app.use('*', cors());
+app.use('*', cors({
+  origin: 'https://rvsverchkov-cloud.students.nomoredomains.work/',
+}));
 app.use(bodyParser.json());
 app.use(bodyParser.urlencoded({ extended: true }));
 app.use(express.static(path.join(__dirname, 'public')));
