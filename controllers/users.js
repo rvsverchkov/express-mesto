@@ -5,6 +5,7 @@ const jwt = require('jsonwebtoken');
 const User = require('../models/user');
 const RequestError = require('../errors/request-error.js');
 const AuthentificationError = require('../errors/authentification-error.js');
+const ConflictError = require('../errors/conflict-error.js');
 require('dotenv').config();
 
 const { NODE_ENV, JWT_SECRET } = process.env;
@@ -58,7 +59,7 @@ const createUser = (req, res, next) => {
       password: hash,
     }))
     .then((user) => res.send(user))
-    .catch(next);
+    .catch(() => next(new ConflictError('Пользователь с таким адресом электронной почты уже существует')));
 };
 
 const updateProfile = (req, res, next) => {
