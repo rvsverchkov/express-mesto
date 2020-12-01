@@ -48,7 +48,7 @@ const likeCard = async (req, res, next) => {
       if (card === null) {
         throw new NotFoundError('Лайк не может быть поставлен, поскольку выбранная карточка отсутствует на сервере');
       } else {
-        res.status(200).send({ data: card, message: 'Лайк был успешно поставлен на выбранную карточку' });
+        res.status(200).send({ card, message: 'Лайк был успешно поставлен на выбранную карточку' });
       }
     })
     .catch(next);
@@ -60,7 +60,7 @@ const dislikeCard = (req, res, next) => {
       if (card === null) {
         throw new NotFoundError('Лайк не может быть удален, поскольку выбранная карточка отсутствует на сервере');
       } else {
-        res.status(200).send({ data: card, message: 'Лайк был успешно удален с выбранной карточки' });
+        res.status(200).send({ card, message: 'Лайк был успешно удален с выбранной карточки' });
       }
     })
     .catch(next);
