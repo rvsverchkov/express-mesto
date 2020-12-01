@@ -10,6 +10,7 @@ const path = require('path');
 const usersRoutes = require('./routes/users.js');
 const cardsRoutes = require('./routes/cards.js');
 const { requestLogger, errorLogger } = require('./middlewares/logger.js');
+const NotFoundError = require('./errors/not-found-error.js');
 
 mongoose.connect('mongodb://localhost:27017/mestodb', {
   useNewUrlParser: true,
@@ -32,8 +33,8 @@ app.use(express.static(path.join(__dirname, 'public')));
 app.use(requestLogger);
 app.use('/', usersRoutes);
 app.use('/', cardsRoutes);
-app.use('*', (req, res) => {
-  res.status(404).send({ message: 'Запрашиваемый ресурс не найден' });
+app.use('*', (req, res, next) => {
+  next(new NotFoundError('Запрашиваемый ресурс не найден'));
 });
 app.use(errorLogger);
 app.use((err, req, res, next) => {
