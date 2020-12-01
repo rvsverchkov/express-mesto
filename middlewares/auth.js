@@ -1,6 +1,3 @@
-/* eslint-disable linebreak-style */
-/* eslint-disable consistent-return */
-/* eslint-disable linebreak-style */
 const jwt = require('jsonwebtoken');
 const AuthentificationError = require('../errors/authentification-error.js');
 require('dotenv').config();

@@ -1,7 +1,4 @@
-/* eslint-disable linebreak-style */
 /* eslint-disable no-underscore-dangle */
-/* eslint-disable linebreak-style */
-/* eslint-disable consistent-return */
 const Card = require('../models/card');
 const RequestError = require('../errors/request-error.js');
 const NotFoundError = require('../errors/not-found-error.js');
