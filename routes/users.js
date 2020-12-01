@@ -22,7 +22,16 @@ router.post('/signin', celebrate({
     password: Joi.string().required(),
   }),
 }), login);
-router.patch('/users/me', auth, updateProfile);
-router.patch('/users/me/avatar', auth, updateAvatar);
+router.patch('/users/me', celebrate({
+  body: Joi.object().keys({
+    name: Joi.string().required().min(2).max(30),
+    about: Joi.string().required().min(2).max(30),
+  }),
+}), auth, updateProfile);
+router.patch('/users/me/avatar', celebrate({
+  body: Joi.object().keys({
+    avatar: Joi.string().required(),
+  }),
+}), auth, updateAvatar);
 
 module.exports = router;
