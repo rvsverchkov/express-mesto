@@ -1,9 +1,17 @@
 const router = require('express').Router();
-const { celebrate, Joi } = require('celebrate');
+const { celebrate, Joi, CelebrateError } = require('celebrate');
+const validator = require('validator');
 const auth = require('../middlewares/auth.js');
 const {
   getUsers, createUser, updateProfile, updateAvatar, login, getUserInfo,
 } = require('../controllers/users');
+
+function validationUrl(value) {
+  if (!validator.isURL(value)) {
+    throw new CelebrateError('Был введен не URL адрес');
+  }
+  return value;
+}
 
 router.get('/users', auth, getUsers);
 router.get('/users/me', auth, getUserInfo);
@@ -30,7 +38,7 @@ router.patch('/users/me', celebrate({
 }), auth, updateProfile);
 router.patch('/users/me/avatar', celebrate({
   body: Joi.object().keys({
-    avatar: Joi.string().required(),
+    avatar: Joi.string().custom(validationUrl),
   }),
 }), auth, updateAvatar);
 
